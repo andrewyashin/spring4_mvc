@@ -1,19 +1,35 @@
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.runner.RunWith;
+package org.training.controllers;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.springframework.test.web.servlet.MockMvc;
 
-@RunWith(Arquillian.class)
+import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
 public class HomeControllerTest {
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(org.training.controllers.HomeController.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+
+    @Test
+    public void shouldReturnRightStringWhenCallHomePageControllerMethod() {
+        String expectedView = "home";
+        String actualView;
+
+        HomeController homeController = new HomeController();
+        actualView = homeController.homePage();
+
+        assertEquals(expectedView, actualView);
     }
+
+    @Test
+    public void shouldReturnRightStringWhenSendRequestToController() throws Exception {
+        String expectedView = "home";
+
+        HomeController homeController = new HomeController();
+
+        MockMvc mockMvc = standaloneSetup(homeController).build();
+        mockMvc.perform(get("/")).andExpect(view().name(expectedView));
+    }
+
 
 }
